@@ -82,8 +82,7 @@ namespace FairyO.Game.Gathering
             particleSys = nodeGO.GetComponent<ParticleSystem>();
 
             // 5. Set Item Yield
-            itemYield = node.yield_max; // set it to max for now
-            this.transform.parent.GetComponent<GatheringGame>().GatherableItemsTotal = node.yield_max;
+            this.transform.parent.GetComponent<GatheringGame>().GatherableItemsTotal = itemYield = node.itemYield.max; // set it to max for now
         }
 
         public IEnumerator Shake(GameObject go)

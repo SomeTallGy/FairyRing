@@ -6,7 +6,6 @@ using FairyO.Game.Gathering;
 
 public class GatherableItemFactory
 {
-
     private Node node;  // node scriptable object
 
     public GatherableItemFactory(Node node)
@@ -17,14 +16,20 @@ public class GatherableItemFactory
     public GameObject NewRandGatherableItem(Transform parent, Vector3 position, Quaternion rotation, Vector3 force)
     {
         // 1. Get a random scriptable object
-        GameItem item = GetRandItemFromNode(node);
+        Item item = GetRandItemFromNode(node);
 
         // 2. Instantiate a new GameObject
         GameObject go = GameObject.Instantiate(item.prefab, position, rotation);
         go.transform.parent = parent;
 
         // 3. Set Components
-        SetComponents(go, item);
+        go.AddComponent<GatherableItem>();
+        go.AddComponent<SelfDestruct>();
+
+        // 2. Add data to GatherableItem
+        GatherableItem gatherableItem = go.GetComponent<GatherableItem>();
+        if (gatherableItem != null)
+            gatherableItem.Item = (Item)item;
 
         // 5. Scale up to the game's scale
         Vector3 gameScale = parent.localScale;
@@ -38,41 +43,16 @@ public class GatherableItemFactory
         return go;
     }
 
-    private void SetComponents(GameObject go, GameItem item)
-    {
-        switch (item.GatherableType)
-        {
-            case GatherableType.Bomb:
-
-                break;
-            case GatherableType.Bonus:
-                
-                break;
-            case GatherableType.Normal:
-            default:
-                // 1. Add Components to make it a normal GatherableItem
-                go.AddComponent<GatherableItem>();
-                go.AddComponent<SelfDestruct>();
-
-                // 2. Add data to GatherableItem
-                GatherableItem gatherableItem = go.GetComponent<GatherableItem>();
-                if (gatherableItem != null)
-                    gatherableItem.GameItem = (GameItem)item;
-
-                break;
-        }
-    }
-
-    private GameItem GetRandItemFromNode(Node node)
+    private Item GetRandItemFromNode(Node node)
     {
         float r = Random.Range(0.0f, 1.0f); // random weight between 0 and 1
         float s = 0.0f; // incremented sum of weights as we traverse node.gatherableCollectibles
 
-        foreach (var item in node.items)
+        foreach (var item in node.itemsYielded)
         {
             if (r >= s && r <= item.weight + s) // return if gatherableCollectible's weight is within span
             {
-                return item;
+                return item.item;
             }
 
             s += item.weight;
@@ -80,10 +60,9 @@ public class GatherableItemFactory
 
         if (r >= s && r <= 1) // account for tiny fraction (artifact from float) between s and 1;
         {
-            return node.items[node.items.Count - 1];
+            return node.itemsYielded[node.itemsYielded.Count - 1].item;
         }
 
-        Debug.LogError("No itemfound from rand");
         return null;
     }
 

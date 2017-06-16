@@ -76,7 +76,7 @@ namespace FairyO.Game.Gathering
             // 1. sort the gatheredItems list by slug
             gatheredItems.Sort(delegate (Item a, Item b)
             {
-                return (a.slug).CompareTo(b.slug);
+                return (a.identity.slug).CompareTo(b.identity.slug);
             });
 
             yield return new WaitForSeconds(0.5f);
@@ -108,7 +108,7 @@ namespace FairyO.Game.Gathering
             yield return this;
         }
 
-        private void OnCollected(GameItem item)
+        private void OnCollected(Item item)
         {
             // 1. add item to gatherItems
             gatheredItems.Add(item);

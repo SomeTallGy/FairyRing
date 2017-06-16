@@ -34,13 +34,13 @@ namespace FairyO.UI
         private void SetItem()
         {
             // set fill
-            switch((ItemTier)this.item.tier - 1)
+            switch((ItemTier)this.item.identity.tier - 1)
             {
                 case ItemTier.Uncommon:
                 case ItemTier.Rare:
                 case ItemTier.Legendary:
                 case ItemTier.Epic:
-                    iconFill.sprite = this.iconFills[this.item.tier - 2];
+                    iconFill.sprite = this.iconFills[this.item.identity.tier - 2];
                     break;
                 case ItemTier.Common:
                 default:

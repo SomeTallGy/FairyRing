@@ -9,14 +9,14 @@ namespace FairyO.Game.Gathering
     {
 		// ----------- events ------------
 		public static event CollectedHandler onCollected;
-		public delegate void CollectedHandler(GameItem item);
+		public delegate void CollectedHandler(Item item);
 
 		// ---------- enum ----------------
 		public enum CollectState {OutBasket, InBasket, Collected}
 
 		// ---------- properties ----------
 		public CollectState State {get; private set;}
-		public GameItem GameItem {get; internal set;}
+		public Item Item {get; internal set;}
 
 		// ---------- private fields ------
 		private SelfDestruct selfDestruct;
@@ -34,7 +34,7 @@ namespace FairyO.Game.Gathering
 				State = CollectState.InBasket;
 				selfDestruct.Reset(true);
 				selfDestruct.onDestruct += Collect;
-				selfDestruct.StartDestruct(0.5f + GameItem.gatherTime);
+				selfDestruct.StartDestruct(0.5f + Item.gatherTime);
 				//selfDestruct.StartDestruct(0.5f + Basket.AbsorbDelay / 4);
 			}
 			else if(State != CollectState.Collected && col.gameObject.name == "Trash")
@@ -59,7 +59,7 @@ namespace FairyO.Game.Gathering
 		{
 			State = CollectState.Collected;
 			if(onCollected != null)
-				onCollected(GameItem);
+				onCollected(Item);
 		}
 
 		private void OnDestructHandler(GameObject go)
